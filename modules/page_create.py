@@ -7,7 +7,7 @@ import sys
 import datetime
 from collections import defaultdict
 import chardet
-from card_layouts import CardLayoutManager
+from .card_layouts import CardLayoutManager
 
 class A4PageGenerator:
     def __init__(self):
@@ -207,7 +207,7 @@ class A4PageGenerator:
         return positions, sizes
 
 class CardPlacementInterface:
-    def __init__(self, page_data=None):
+    def __init__(self, page_data=None, card_dir="output", page_output_dir="a4_output"):
         self.root = tk.Tk()
         self.root.title("カード配置")
         self.root.geometry("1200x800")
@@ -226,6 +226,10 @@ class CardPlacementInterface:
         # ページジェネレーター
         self.page_generator = A4PageGenerator()
         
+        # 出力ディレクトリ
+        self.card_dir = card_dir
+        self.page_output_dir = page_output_dir
+
         # 外部から渡されたページデータ
         self.page_data = page_data
         self.all_cards = []
@@ -446,7 +450,7 @@ class CardPlacementInterface:
             if i < len(self.card_data):
                 card = self.card_data[i]
                 image_path = os.path.join(
-                    "output",
+                    self.card_dir,
                     f"{card['item_code']}-{card['product_name']}_{card['color_jp']}_{'full' if size == 'full' else 'half'}.png"
                 )
                 
@@ -538,7 +542,7 @@ class CardPlacementInterface:
             return
             
         # ページを保存
-        output_dir = "a4_output"
+        output_dir = self.page_output_dir
         os.makedirs(output_dir, exist_ok=True)
         
         # カード情報を準備
@@ -549,7 +553,7 @@ class CardPlacementInterface:
             if i < len(self.card_data):
                 card = self.card_data[i]
                 image_path = os.path.join(
-                    "output",
+                    self.card_dir,
                     f"{card['item_code']}-{card['product_name']}_{card['color_jp']}_{'full' if size == 'full' else 'half'}.png"
                 )
                 
@@ -696,7 +700,7 @@ class CardPlacementInterface:
                 # プレビュー用画像パスを出力（デバッグ用）
                 if len(self.all_cards) <= 3:  # 最初の3枚だけ表示
                     size = 'full' if len(self.all_cards) == 1 else 'half'
-                    print(f"プレビュー用画像パス: output\\{card['item_code']}-{card['product_name']}_{card['color']}_{size}.png")
+                    print(f"プレビュー用画像パス: {self.card_dir}\\{card['item_code']}-{card['product_name']}_{card['color']}_{size}.png")
     
     def load_csv(self, csv_path):
         # CSVからデータを読み込む
@@ -732,7 +736,7 @@ class PageCreator:
     def __init__(self):
         self.page_generator = A4PageGenerator()
 
-    def process_csv_data(self, data_rows, output_dir, a4_output_dir):
+    def process_csv_data(self, data_rows, card_dir, a4_output_dir):
         # データをCardPlacementInterfaceに渡すための形式に変換
         page_data = []
         product_groups = {}
@@ -756,7 +760,9 @@ class PageCreator:
             page_data.append((page_name, cards))
 
         # CardPlacementInterfaceを使用してページを生成
-        interface = CardPlacementInterface(page_data=page_data)
+        interface = CardPlacementInterface(page_data=page_data,
+                                           card_dir=card_dir,
+                                           page_output_dir=a4_output_dir)
         interface.main()
 
     def process_csv(self):

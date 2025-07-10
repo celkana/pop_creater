@@ -1,8 +1,8 @@
 import os
 import csv
 import datetime
-from card_create import ProductCardGenerator
-from page_create import CardPlacementInterface, PageCreator
+from modules.card_create import ProductCardGenerator
+from modules.page_create import PageCreator
 import tkinter as tk
 from tkinter import filedialog
 import chardet
@@ -20,10 +20,16 @@ def main():
         print("CSVファイルが選択されませんでした。")
         return
 
+    # 保存先フォルダを選択
+    base_output_dir = filedialog.askdirectory(title="保存先フォルダを選択")
+    if not base_output_dir:
+        print("保存先フォルダが選択されませんでした。")
+        return
+
     # 出力ディレクトリの作成
-    output_dir = "output"
-    a4_output_dir = "a4_output"
-    log_dir = "log"
+    output_dir = os.path.join(base_output_dir, "card")
+    a4_output_dir = base_output_dir
+    log_dir = os.path.join(base_output_dir, "log")
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(a4_output_dir, exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)

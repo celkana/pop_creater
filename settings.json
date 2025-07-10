@@ -1,0 +1,6 @@
+{
+    "card_output_dir": "output/cards",
+    "page_output_dir": "output/pages",
+    "font_family": "@游ゴシック",
+    "image_format": "png"
+}

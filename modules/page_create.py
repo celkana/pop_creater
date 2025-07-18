@@ -764,6 +764,7 @@ class PageCreator:
                                            card_dir=card_dir,
                                            page_output_dir=a4_output_dir)
         interface.main()
+        return interface.log_data
 
     def process_csv(self):
         csv_path = filedialog.askopenfilename(title="CSVファイルを選択", filetypes=[("CSV files", "*.csv")])

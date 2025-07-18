@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 2. プログラムを実行:
 ```bash
-python product_card_generator.py
+python create_all.py
 ```
 
 3. CSVファイルを選択します。
